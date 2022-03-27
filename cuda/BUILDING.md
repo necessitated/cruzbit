@@ -10,7 +10,7 @@ sudo sh cuda_10.1.168_418.67_linux.run
 rm -rf go/src/github.com/cruzbit/
 mkdir -p go/src/github.com/cruzbit/
 cd go/src/github.com/cruzbit/
-git clone https://github.com/cruzbit/cruzbit.git
+git clone https://github.com/jstnryan/cruzbit.git
 cd cruzbit/cuda
 mkdir build
 cd build

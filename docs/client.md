@@ -6,8 +6,8 @@ To build the latest wallet binaries from master, simply invoke the Go toolchain 
 
 ```
 $ export GO111MODULE=on
-$ go get -v github.com/cruzbit/cruzbit/client
-$ go install -v github.com/cruzbit/cruzbit/client
+$ go get -v github.com/jstnryan/cruzbit/client
+$ go install -v github.com/jstnryan/cruzbit/client
 ```
 
 The cruzbit bins should now be available in your go-managed `$GOPATH/bin` (which is hopefully also on your `$PATH`). You can test this by running `client -h` to print the help screen.

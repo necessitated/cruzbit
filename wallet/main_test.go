@@ -1,7 +1,7 @@
 package main
 
 import (
-	. "github.com/cruzbit/cruzbit"
+	. "github.com/jstnryan/cruzbit"
 	"strconv"
 	"testing"
 )

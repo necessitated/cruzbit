@@ -6,9 +6,9 @@ This library either borrows code directly from or was inspired by the following:
 * [tiny_sha3](https://github.com/mjosaarinen/tiny_sha3/)
 * [oclminer](https://github.com/tcatm/oclminer/)
 
-The [LICENSE](https://github.com/cruzbit/cruzbit/blob/master/opencl/LICENSE) file in this directory is the license associated with tiny_sha3.
+The [LICENSE](https://github.com/jstnryan/cruzbit/blob/master/opencl/LICENSE) file in this directory is the license associated with tiny_sha3.
 
-The [COPYING](https://github.com/cruzbit/cruzbit/blob/master/opencl/COPYING) file in this directory is the license associated with oclminer.
+The [COPYING](https://github.com/jstnryan/cruzbit/blob/master/opencl/COPYING) file in this directory is the license associated with oclminer.
 
 ## How to build with OpenCL support
 
@@ -18,11 +18,11 @@ Tested on Ubuntu Linux 18.04 LTS. This assumes you've followed [these steps](htt
 sudo apt install -y build-essential
 sudo apt install -y cmake
 sudo apt install ocl-icd-* opencl-headers
-rm -rf go/src/github.com/cruzbit/
-mkdir -p go/src/github.com/cruzbit/
-cd go/src/github.com/cruzbit/
-git clone https://github.com/cruzbit/cruzbit.git
-cd cruzbit/opencl
+rm -rf go/src/github.com/jstnryan/
+mkdir -p go/src/github.com/jstnryan/
+cd go/src/github.com/jstnryan/
+git clone https://github.com/jstnryan/cruzbit.git
+cd jstnryan/opencl
 cp cruzbit.cl ../client/
 mkdir build
 cd build
