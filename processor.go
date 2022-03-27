@@ -191,15 +191,15 @@ func (p *Processor) processTransaction(id TransactionID, tx *Transaction, source
 	log.Printf("Processing transaction %s\n", id)
 
 	// min fee? if not waste no more time
-	if tx.Fee < MIN_FEE_CRUZBITS {
+	if tx.Fee < MinFeeCruzbits {
 		return fmt.Errorf("Transaction %s doesn't pay minimum fee %.6f\n",
-			id, float64(MIN_FEE_CRUZBITS)/CRUZBITS_PER_CRUZ)
+			id, float64(MinFeeCruzbits)/CruzbitsPerCruz)
 	}
 
 	// min amount? if not waste no more time
-	if tx.Amount < MIN_AMOUNT_CRUZBITS {
+	if tx.Amount < MinAmountCruzbits {
 		return fmt.Errorf("Transaction %s amount too small, minimum is %.6f\n",
-			id, float64(MIN_AMOUNT_CRUZBITS)/CRUZBITS_PER_CRUZ)
+			id, float64(MinAmountCruzbits)/CruzbitsPerCruz)
 	}
 
 	// context-free checks
@@ -213,7 +213,7 @@ func (p *Processor) processTransaction(id TransactionID, tx *Transaction, source
 	}
 
 	// is the queue full?
-	if p.txQueue.Len() >= MAX_TRANSACTION_QUEUE_LENGTH {
+	if p.txQueue.Len() >= MaxTransactionQueueLength {
 		return fmt.Errorf("No room for transaction %s, queue is full", id)
 	}
 
@@ -282,7 +282,7 @@ func checkTransaction(id TransactionID, tx *Transaction) error {
 	// sane-ish time.
 	// transaction timestamps are strictly for user and application usage.
 	// we make no claims to their validity and rely on them for nothing.
-	if tx.Time < 0 || tx.Time > MAX_NUMBER {
+	if tx.Time < 0 || tx.Time > MaxNumber {
 		return fmt.Errorf("Invalid transaction time, transaction: %s", id)
 	}
 
@@ -336,13 +336,13 @@ func checkTransaction(id TransactionID, tx *Transaction) error {
 	if tx.Amount <= 0 {
 		return fmt.Errorf("Transaction %s contains invalid amount", id)
 	}
-	if tx.Amount > MAX_MONEY {
+	if tx.Amount > MaxMoney {
 		return fmt.Errorf("Transaction %s contains too large of an amount", id)
 	}
 	if tx.Fee < 0 {
 		return fmt.Errorf("Transaction %s contains negative fee", id)
 	}
-	if tx.Fee > MAX_MONEY {
+	if tx.Fee > MaxMoney {
 		return fmt.Errorf("Transaction %s contains too large of a fee", id)
 	}
 
@@ -352,18 +352,18 @@ func checkTransaction(id TransactionID, tx *Transaction) error {
 	}
 
 	// check memo length
-	if len(tx.Memo) > MAX_MEMO_LENGTH {
+	if len(tx.Memo) > MaxMemoLength {
 		return fmt.Errorf("Transaction %s memo length exceeded", id)
 	}
 
 	// sanity check maturity, expiration and series
-	if tx.Matures < 0 || tx.Matures > MAX_NUMBER {
+	if tx.Matures < 0 || tx.Matures > MaxNumber {
 		return fmt.Errorf("Invalid maturity, transaction: %s", id)
 	}
-	if tx.Expires < 0 || tx.Expires > MAX_NUMBER {
+	if tx.Expires < 0 || tx.Expires > MaxNumber {
 		return fmt.Errorf("Invalid expiration, transaction: %s", id)
 	}
-	if tx.Series <= 0 || tx.Series > MAX_NUMBER {
+	if tx.Series <= 0 || tx.Series > MaxNumber {
 		return fmt.Errorf("Invalid series, transaction: %s", id)
 	}
 
@@ -374,12 +374,12 @@ func checkTransaction(id TransactionID, tx *Transaction) error {
 func checkTransactionSeries(tx *Transaction, height int64) bool {
 	if tx.From == nil {
 		// coinbases must start a new series right on time
-		return tx.Series == height/BLOCKS_UNTIL_NEW_SERIES+1
+		return tx.Series == height/BlocksUntilNewSeries+1
 	}
 
 	// user transactions have a grace period (1 full series) to mitigate effects
 	// of any potential queueing delay and/or reorgs near series switchover time
-	high := height/BLOCKS_UNTIL_NEW_SERIES + 1
+	high := height/BlocksUntilNewSeries + 1
 	low := high - 1
 	if low == 0 {
 		low = 1
@@ -437,12 +437,12 @@ func (p *Processor) processBlock(id BlockID, block *Block, source string) error 
 // Context-free block sanity checker
 func checkBlock(id BlockID, block *Block, now int64) error {
 	// sanity check time
-	if block.Header.Time < 0 || block.Header.Time > MAX_NUMBER {
+	if block.Header.Time < 0 || block.Header.Time > MaxNumber {
 		return fmt.Errorf("Time value is invalid, block %s", id)
 	}
 
 	// check timestamp isn't too far in the future
-	if block.Header.Time > now+MAX_FUTURE_SECONDS {
+	if block.Header.Time > now+MaxFutureSeconds {
 		return fmt.Errorf(
 			"Timestamp %d too far in the future, now %d, block %s",
 			block.Header.Time,
@@ -457,12 +457,12 @@ func checkBlock(id BlockID, block *Block, now int64) error {
 	}
 
 	// sanity check nonce
-	if block.Header.Nonce < 0 || block.Header.Nonce > MAX_NUMBER {
+	if block.Header.Nonce < 0 || block.Header.Nonce > MaxNumber {
 		return fmt.Errorf("Nonce value is invalid, block %s", id)
 	}
 
 	// sanity check height
-	if block.Header.Height < 0 || block.Header.Height > MAX_NUMBER {
+	if block.Header.Height < 0 || block.Header.Height > MaxNumber {
 		return fmt.Errorf("Height value is invalid, block %s", id)
 	}
 
@@ -538,21 +538,21 @@ func checkBlock(id BlockID, block *Block, now int64) error {
 
 // Computes the maximum number of transactions allowed in a block at the given height. Inspired by BIP 101
 func computeMaxTransactionsPerBlock(height int64) int {
-	if height >= MAX_TRANSACTIONS_PER_BLOCK_EXCEEDED_AT_HEIGHT {
+	if height >= MaxTransactionsPerBlockExceededAtHeight {
 		// I guess we can revisit this sometime in the next 35 years if necessary
-		return MAX_TRANSACTIONS_PER_BLOCK
+		return MaxTransactionsPerBlock
 	}
 
 	// piecewise-linear-between-doublings growth
-	doublings := height / BLOCKS_UNTIL_TRANSACTIONS_PER_BLOCK_DOUBLING
+	doublings := height / BlocksUntilTransactionsPerBlockDoubling
 	if doublings >= 64 {
 		panic("Overflow uint64")
 	}
-	remainder := height % BLOCKS_UNTIL_TRANSACTIONS_PER_BLOCK_DOUBLING
+	remainder := height % BlocksUntilTransactionsPerBlockDoubling
 	factor := int64(1 << uint64(doublings))
-	interpolate := (INITIAL_MAX_TRANSACTIONS_PER_BLOCK * factor * remainder) /
-		BLOCKS_UNTIL_TRANSACTIONS_PER_BLOCK_DOUBLING
-	return int(INITIAL_MAX_TRANSACTIONS_PER_BLOCK*factor + interpolate)
+	interpolate := (InitialMaxTransactionsPerBlock * factor * remainder) /
+		BlocksUntilTransactionsPerBlockDoubling
+	return int(InitialMaxTransactionsPerBlock*factor + interpolate)
 }
 
 // Attempt to extend the chain with the new block
@@ -670,18 +670,18 @@ func (p *Processor) acceptBlock(id BlockID, block *Block, now int64, source stri
 
 // BlockCreationReward computes the expected block reward for the given height.
 func BlockCreationReward(height int64) int64 {
-	halvings := height / BLOCKS_UNTIL_REWARD_HALVING
+	halvings := height / BlocksUntilRewardHalving
 	if halvings >= 64 {
 		return 0
 	}
-	var reward int64 = INITIAL_COINBASE_REWARD
+	var reward int64 = InitialCoinbaseReward
 	reward >>= uint64(halvings)
 	return reward
 }
 
 // Compute expected target of the current block
 func computeTarget(prevHeader *BlockHeader, blockStore BlockStorage, ledger Ledger) (BlockID, error) {
-	if prevHeader.Height >= BITCOIN_CASH_RETARGET_ALGORITHM_HEIGHT {
+	if prevHeader.Height >= BitcoinCashRetargetAlgorithmHeight {
 		return computeTargetBitcoinCash(prevHeader, blockStore, ledger)
 	}
 	return computeTargetBitcoin(prevHeader, blockStore)
@@ -689,15 +689,15 @@ func computeTarget(prevHeader *BlockHeader, blockStore BlockStorage, ledger Ledg
 
 // Original target computation
 func computeTargetBitcoin(prevHeader *BlockHeader, blockStore BlockStorage) (BlockID, error) {
-	if (prevHeader.Height+1)%RETARGET_INTERVAL != 0 {
+	if (prevHeader.Height+1)%RetargetInterval != 0 {
 		// not 2016th block, use previous block's value
 		return prevHeader.Target, nil
 	}
 
 	// defend against time warp attack
-	blocksToGoBack := RETARGET_INTERVAL - 1
-	if (prevHeader.Height + 1) != RETARGET_INTERVAL {
-		blocksToGoBack = RETARGET_INTERVAL
+	blocksToGoBack := RetargetInterval - 1
+	if (prevHeader.Height + 1) != RetargetInterval {
+		blocksToGoBack = RetargetInterval
 	}
 
 	// walk back to the first block of the interval
@@ -712,8 +712,8 @@ func computeTargetBitcoin(prevHeader *BlockHeader, blockStore BlockStorage) (Blo
 
 	actualTimespan := prevHeader.Time - firstHeader.Time
 
-	minTimespan := int64(RETARGET_TIME / 4)
-	maxTimespan := int64(RETARGET_TIME * 4)
+	minTimespan := int64(RetargetTime / 4)
+	maxTimespan := int64(RetargetTime * 4)
 
 	if actualTimespan < minTimespan {
 		actualTimespan = minTimespan
@@ -723,9 +723,9 @@ func computeTargetBitcoin(prevHeader *BlockHeader, blockStore BlockStorage) (Blo
 	}
 
 	actualTimespanInt := big.NewInt(actualTimespan)
-	retargetTimeInt := big.NewInt(RETARGET_TIME)
+	retargetTimeInt := big.NewInt(RetargetTime)
 
-	initialTargetBytes, err := hex.DecodeString(INITIAL_TARGET)
+	initialTargetBytes, err := hex.DecodeString(InitialTarget)
 	if err != nil {
 		return BlockID{}, err
 	}
@@ -749,7 +749,7 @@ func computeTargetBitcoin(prevHeader *BlockHeader, blockStore BlockStorage) (Blo
 func computeTargetBitcoinCash(prevHeader *BlockHeader, blockStore BlockStorage, ledger Ledger) (
 	targetID BlockID, err error) {
 
-	firstID, err := ledger.GetBlockIDForHeight(prevHeader.Height - RETARGET_SMA_WINDOW)
+	firstID, err := ledger.GetBlockIDForHeight(prevHeader.Height - RetargetSmaWindow)
 	if err != nil {
 		return
 	}
@@ -759,15 +759,15 @@ func computeTargetBitcoinCash(prevHeader *BlockHeader, blockStore BlockStorage, 
 	}
 
 	workInt := new(big.Int).Sub(prevHeader.ChainWork.GetBigInt(), firstHeader.ChainWork.GetBigInt())
-	workInt.Mul(workInt, big.NewInt(TARGET_SPACING))
+	workInt.Mul(workInt, big.NewInt(TargetSpacing))
 
 	// "In order to avoid difficulty cliffs, we bound the amplitude of the
 	// adjustment we are going to do to a factor in [0.5, 2]." - Bitcoin-ABC
 	actualTimespan := prevHeader.Time - firstHeader.Time
-	if actualTimespan > 2*RETARGET_SMA_WINDOW*TARGET_SPACING {
-		actualTimespan = 2 * RETARGET_SMA_WINDOW * TARGET_SPACING
-	} else if actualTimespan < (RETARGET_SMA_WINDOW/2)*TARGET_SPACING {
-		actualTimespan = (RETARGET_SMA_WINDOW / 2) * TARGET_SPACING
+	if actualTimespan > 2*RetargetSmaWindow*TargetSpacing {
+		actualTimespan = 2 * RetargetSmaWindow * TargetSpacing
+	} else if actualTimespan < (RetargetSmaWindow/2)*TargetSpacing {
+		actualTimespan = (RetargetSmaWindow / 2) * TargetSpacing
 	}
 
 	workInt.Div(workInt, big.NewInt(actualTimespan))
@@ -778,7 +778,7 @@ func computeTargetBitcoinCash(prevHeader *BlockHeader, blockStore BlockStorage, 
 	newTargetInt.Sub(newTargetInt, big.NewInt(1))
 
 	// don't go above the initial target
-	initialTargetBytes, err := hex.DecodeString(INITIAL_TARGET)
+	initialTargetBytes, err := hex.DecodeString(InitialTarget)
 	if err != nil {
 		return
 	}
@@ -796,7 +796,7 @@ func computeTargetBitcoinCash(prevHeader *BlockHeader, blockStore BlockStorage, 
 func computeMedianTimestamp(prevHeader *BlockHeader, blockStore BlockStorage) (int64, error) {
 	var timestamps []int64
 	var err error
-	for i := 0; i < NUM_BLOCKS_FOR_MEDIAN_TMESTAMP; i++ {
+	for i := 0; i < NumBlocksForMedianTmestamp; i++ {
 		timestamps = append(timestamps, prevHeader.Time)
 		prevHeader, _, err = blockStore.GetBlockHeader(prevHeader.Previous)
 		if err != nil {

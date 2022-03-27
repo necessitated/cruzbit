@@ -110,7 +110,7 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		log.Printf("Current balance: %.8f\n", aurora.Bold(float64(balance)/CRUZBITS_PER_CRUZ))
+		log.Printf("Current balance: %.8f\n", aurora.Bold(float64(balance)/CruzbitsPerCruz))
 
 	case "balance_at":
 		if pubKey == nil {
@@ -120,7 +120,7 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		log.Printf("Balance at height %d: %.8f\n", *heightPtr, aurora.Bold(float64(balance)/CRUZBITS_PER_CRUZ))
+		log.Printf("Balance at height %d: %.8f\n", *heightPtr, aurora.Bold(float64(balance)/CruzbitsPerCruz))
 
 	case "block_at":
 		id, err := ledger.GetBlockIDForHeight(int64(*heightPtr))
@@ -296,16 +296,16 @@ func verify(ledger Ledger, blockStore BlockStorage, pubKey ed25519.PublicKey, he
 
 	if pubKey == nil {
 		// compute expected total balance
-		if height-COINBASE_MATURITY >= 0 {
+		if height-CoinbaseMaturity >= 0 {
 			// sum all mature rewards per schedule
 			var i int64
-			for i = 0; i <= height-COINBASE_MATURITY; i++ {
+			for i = 0; i <= height-CoinbaseMaturity; i++ {
 				expect += BlockCreationReward(i)
 			}
 
 			// account for fees included in immature rewards
 			var immatureFees int64
-			for i = height - COINBASE_MATURITY + 1; i <= height; i++ {
+			for i = height - CoinbaseMaturity + 1; i <= height; i++ {
 				if i < 0 {
 					continue
 				}
@@ -352,13 +352,13 @@ func verify(ledger Ledger, blockStore BlockStorage, pubKey ed25519.PublicKey, he
 		log.Fatalf("%s: At height %d, we expected %.8f cruz but we found %.8f\n",
 			aurora.Bold(aurora.Red("FAILURE")),
 			aurora.Bold(height),
-			aurora.Bold(float64(expect)/CRUZBITS_PER_CRUZ),
-			aurora.Bold(float64(found)/CRUZBITS_PER_CRUZ))
+			aurora.Bold(float64(expect)/CruzbitsPerCruz),
+			aurora.Bold(float64(found)/CruzbitsPerCruz))
 	}
 
 	log.Printf("%s: At height %d, we expected %.8f cruz and we found %.8f\n",
 		aurora.Bold(aurora.Green("SUCCESS")),
 		aurora.Bold(height),
-		aurora.Bold(float64(expect)/CRUZBITS_PER_CRUZ),
-		aurora.Bold(float64(found)/CRUZBITS_PER_CRUZ))
+		aurora.Bold(float64(expect)/CruzbitsPerCruz),
+		aurora.Bold(float64(found)/CruzbitsPerCruz))
 }

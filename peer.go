@@ -233,7 +233,7 @@ func (p *Peer) run() {
 		defer p.processor.UnregisterForTipChange(tipChangeChan)
 
 		// register to hear about new transactions
-		newTxChan := make(chan NewTx, MAX_TRANSACTIONS_TO_INCLUDE_PER_BLOCK)
+		newTxChan := make(chan NewTx, MaxTransactionsToIncludePerBlock)
 		p.processor.RegisterForNewTransactions(newTxChan)
 		defer p.processor.UnregisterForNewTransactions(newTxChan)
 
@@ -414,7 +414,7 @@ func (p *Peer) run() {
 					break
 				}
 				txCount := len(p.workBlock.Transactions)
-				if txCount == MAX_TRANSACTIONS_TO_INCLUDE_PER_BLOCK {
+				if txCount == MaxTransactionsToIncludePerBlock {
 					// already at capacity
 					break
 				}
@@ -492,7 +492,7 @@ func (p *Peer) run() {
 			}
 
 			// hangup if the peer is sending oversized messages
-			if m.Type != "block" && len(message) > MAX_PROTOCOL_MESSAGE_LENGTH {
+			if m.Type != "block" && len(message) > MaxProtocolMessageLength {
 				log.Printf("Received too large (%d bytes) of a '%s' message, from: %s",
 					len(message), m.Type, p.conn.RemoteAddr())
 				return
@@ -717,8 +717,8 @@ func (p *Peer) run() {
 				outChan <- Message{
 					Type: "transaction_relay_policy",
 					Body: TransactionRelayPolicyMessage{
-						MinFee:    MIN_FEE_CRUZBITS,
-						MinAmount: MIN_AMOUNT_CRUZBITS,
+						MinFee:    MinFeeCruzbits,
+						MinAmount: MinAmountCruzbits,
 					},
 				}
 
@@ -1559,8 +1559,8 @@ func (p *Peer) onGetWork(gw GetWorkMessage) {
 		err = fmt.Errorf("Peer already has work")
 	} else if len(gw.PublicKeys) == 0 {
 		err = fmt.Errorf("No public keys specified")
-	} else if len(gw.Memo) > MAX_MEMO_LENGTH {
-		err = fmt.Errorf("Max memo length (%d) exceeded: %d", MAX_MEMO_LENGTH, len(gw.Memo))
+	} else if len(gw.Memo) > MaxMemoLength {
+		err = fmt.Errorf("Max memo length (%d) exceeded: %d", MaxMemoLength, len(gw.Memo))
 	} else {
 		var tipID *BlockID
 		var tipHeader *BlockHeader

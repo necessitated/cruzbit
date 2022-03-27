@@ -177,15 +177,15 @@ func (l LedgerDisk) ConnectBlock(id BlockID, block *Block) ([]TransactionID, err
 			// depend on coinbases.
 			txToApply = nil
 
-			if block.Header.Height-COINBASE_MATURITY >= 0 {
+			if block.Header.Height-CoinbaseMaturity >= 0 {
 				// mature the coinbase from 100 blocks ago now
-				oldID, err := l.GetBlockIDForHeight(block.Header.Height - COINBASE_MATURITY)
+				oldID, err := l.GetBlockIDForHeight(block.Header.Height - CoinbaseMaturity)
 				if err != nil {
 					return nil, err
 				}
 				if oldID == nil {
 					return nil, fmt.Errorf("Missing block at height %d\n",
-						block.Header.Height-COINBASE_MATURITY)
+						block.Header.Height-CoinbaseMaturity)
 				}
 
 				// we could store the last 100 coinbases on our own in memory if we end up needing to
@@ -273,8 +273,8 @@ func (l LedgerDisk) ConnectBlock(id BlockID, block *Block) ([]TransactionID, err
 	batch.Put(key, ctBytes)
 
 	// prune historic transaction and public key transaction indices now
-	if l.prune && block.Header.Height >= 2*BLOCKS_UNTIL_NEW_SERIES {
-		if err := l.pruneIndices(block.Header.Height-2*BLOCKS_UNTIL_NEW_SERIES, batch); err != nil {
+	if l.prune && block.Header.Height >= 2*BlocksUntilNewSeries {
+		if err := l.pruneIndices(block.Header.Height-2*BlocksUntilNewSeries, batch); err != nil {
 			return nil, err
 		}
 	}
@@ -332,15 +332,15 @@ func (l LedgerDisk) DisconnectBlock(id BlockID, block *Block) ([]TransactionID, 
 			// coinbase doesn't affect recipient balance for 100 more blocks
 			txToUndo = nil
 
-			if block.Header.Height-COINBASE_MATURITY >= 0 {
+			if block.Header.Height-CoinbaseMaturity >= 0 {
 				// undo the effect of the coinbase from 100 blocks ago now
-				oldID, err := l.GetBlockIDForHeight(block.Header.Height - COINBASE_MATURITY)
+				oldID, err := l.GetBlockIDForHeight(block.Header.Height - CoinbaseMaturity)
 				if err != nil {
 					return nil, err
 				}
 				if oldID == nil {
 					return nil, fmt.Errorf("Missing block at height %d\n",
-						block.Header.Height-COINBASE_MATURITY)
+						block.Header.Height-CoinbaseMaturity)
 				}
 				oldTx, _, err := l.blockStore.GetTransaction(*oldID, 0)
 				if err != nil {
@@ -422,8 +422,8 @@ func (l LedgerDisk) DisconnectBlock(id BlockID, block *Block) ([]TransactionID, 
 	batch.Put(key, ctBytes)
 
 	// restore historic indices now
-	if l.prune && block.Header.Height >= 2*BLOCKS_UNTIL_NEW_SERIES {
-		if err := l.restoreIndices(block.Header.Height-2*BLOCKS_UNTIL_NEW_SERIES, batch); err != nil {
+	if l.prune && block.Header.Height >= 2*BlocksUntilNewSeries {
+		if err := l.restoreIndices(block.Header.Height-2*BlocksUntilNewSeries, batch); err != nil {
 			return nil, err
 		}
 	}
@@ -853,7 +853,7 @@ func (l LedgerDisk) GetPublicKeyBalanceAt(pubKey ed25519.PublicKey, height int64
 			return 0, err
 		}
 
-		if index == 0 && height > currentHeight-COINBASE_MATURITY {
+		if index == 0 && height > currentHeight-CoinbaseMaturity {
 			// coinbase isn't mature
 			continue
 		}

@@ -7,14 +7,14 @@ import "testing"
 
 func TestBlockCreationReward(t *testing.T) {
 	var maxHalvings int64 = 64
-	var previous int64 = INITIAL_COINBASE_REWARD * 2
+	var previous int64 = InitialCoinbaseReward * 2
 	var halvings int64
 	for halvings = 0; halvings < maxHalvings; halvings++ {
-		var height int64 = halvings * BLOCKS_UNTIL_REWARD_HALVING
+		var height int64 = halvings * BlocksUntilRewardHalving
 		reward := BlockCreationReward(height)
-		if reward > INITIAL_COINBASE_REWARD {
+		if reward > InitialCoinbaseReward {
 			t.Fatalf("Reward %d at height %d greater than initial reward %d",
-				reward, height, INITIAL_COINBASE_REWARD)
+				reward, height, InitialCoinbaseReward)
 		}
 		if reward != previous/2 {
 			t.Fatalf("Reward %d at height %d not equal to half previous period reward",
@@ -22,7 +22,7 @@ func TestBlockCreationReward(t *testing.T) {
 		}
 		previous = reward
 	}
-	if BlockCreationReward(maxHalvings*BLOCKS_UNTIL_REWARD_HALVING) != 0 {
+	if BlockCreationReward(maxHalvings*BlocksUntilRewardHalving) != 0 {
 		t.Fatalf("Expected 0 reward by %d halving", maxHalvings)
 	}
 }
@@ -30,17 +30,17 @@ func TestBlockCreationReward(t *testing.T) {
 func TestComputeMaxTransactionsPerBlock(t *testing.T) {
 	var maxDoublings int64 = 64
 	var doublings int64
-	previous := INITIAL_MAX_TRANSACTIONS_PER_BLOCK / 2
+	previous := InitialMaxTransactionsPerBlock / 2
 	// verify the max is always doubling as expected
 	for doublings = 0; doublings < maxDoublings; doublings++ {
-		var height int64 = doublings * BLOCKS_UNTIL_TRANSACTIONS_PER_BLOCK_DOUBLING
+		var height int64 = doublings * BlocksUntilTransactionsPerBlockDoubling
 		max := computeMaxTransactionsPerBlock(height)
-		if max < INITIAL_MAX_TRANSACTIONS_PER_BLOCK {
+		if max < InitialMaxTransactionsPerBlock {
 			t.Fatalf("Max %d at height %d less than initial", max, height)
 		}
 		expect := previous * 2
-		if expect > MAX_TRANSACTIONS_PER_BLOCK {
-			expect = MAX_TRANSACTIONS_PER_BLOCK
+		if expect > MaxTransactionsPerBlock {
+			expect = MaxTransactionsPerBlock
 		}
 		if max != expect {
 			t.Fatalf("Max %d at height %d not equal to expected max %d",
@@ -51,7 +51,7 @@ func TestComputeMaxTransactionsPerBlock(t *testing.T) {
 			// walk back over the previous period and make sure:
 			// 1) the max is never greater than this period's first max
 			// 2) the max is always <= the previous as we walk back
-			for height -= 1; height >= (doublings-1)*BLOCKS_UNTIL_TRANSACTIONS_PER_BLOCK_DOUBLING; height-- {
+			for height -= 1; height >= (doublings-1)*BlocksUntilTransactionsPerBlockDoubling; height-- {
 				max2 := computeMaxTransactionsPerBlock(height)
 				if max2 > max {
 					t.Fatalf("Max %d at height %d is greater than next period's first max %d",
@@ -66,19 +66,19 @@ func TestComputeMaxTransactionsPerBlock(t *testing.T) {
 		}
 		previous = max
 	}
-	max := computeMaxTransactionsPerBlock(MAX_TRANSACTIONS_PER_BLOCK_EXCEEDED_AT_HEIGHT)
-	if max != MAX_TRANSACTIONS_PER_BLOCK {
+	max := computeMaxTransactionsPerBlock(MaxTransactionsPerBlockExceededAtHeight)
+	if max != MaxTransactionsPerBlock {
 		t.Fatalf("Expected %d at height %d, found %d",
-			MAX_TRANSACTIONS_PER_BLOCK, MAX_TRANSACTIONS_PER_BLOCK_EXCEEDED_AT_HEIGHT, max)
+			MaxTransactionsPerBlock, MaxTransactionsPerBlockExceededAtHeight, max)
 	}
-	max = computeMaxTransactionsPerBlock(MAX_TRANSACTIONS_PER_BLOCK_EXCEEDED_AT_HEIGHT + 1)
-	if max != MAX_TRANSACTIONS_PER_BLOCK {
+	max = computeMaxTransactionsPerBlock(MaxTransactionsPerBlockExceededAtHeight + 1)
+	if max != MaxTransactionsPerBlock {
 		t.Fatalf("Expected %d at height %d, found",
-			MAX_TRANSACTIONS_PER_BLOCK, MAX_TRANSACTIONS_PER_BLOCK_EXCEEDED_AT_HEIGHT+1)
+			MaxTransactionsPerBlock, MaxTransactionsPerBlockExceededAtHeight+1)
 	}
-	max = computeMaxTransactionsPerBlock(MAX_TRANSACTIONS_PER_BLOCK_EXCEEDED_AT_HEIGHT - 1)
-	if max >= MAX_TRANSACTIONS_PER_BLOCK {
+	max = computeMaxTransactionsPerBlock(MaxTransactionsPerBlockExceededAtHeight - 1)
+	if max >= MaxTransactionsPerBlock {
 		t.Fatalf("Expected less than max at height %d, found %d",
-			MAX_TRANSACTIONS_PER_BLOCK_EXCEEDED_AT_HEIGHT-1, max)
+			MaxTransactionsPerBlockExceededAtHeight-1, max)
 	}
 }

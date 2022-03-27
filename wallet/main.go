@@ -31,7 +31,7 @@ import (
 func main() {
 	rand.Seed(time.Now().UnixNano())
 
-	DefaultPeer := "127.0.0.1:" + strconv.Itoa(DEFAULT_CRUZBIT_PORT)
+	DefaultPeer := "127.0.0.1:" + strconv.Itoa(DefaultCruzbitPort)
 	peerPtr := flag.String("peer", DefaultPeer, "Address of a peer to connect to")
 	dbPathPtr := flag.String("walletdb", "", "Path to a wallet database (created if it doesn't exist)")
 	tlsVerifyPtr := flag.Bool("tlsverify", false, "Verify the TLS certificate of the peer is signed by a recognized CA and the host matches the CN")
@@ -47,7 +47,7 @@ func main() {
 	// add default port, if one was not supplied
 	i := strings.LastIndex(*peerPtr, ":")
 	if i < 0 {
-		*peerPtr = *peerPtr + ":" + strconv.Itoa(DEFAULT_CRUZBIT_PORT)
+		*peerPtr = *peerPtr + ":" + strconv.Itoa(DefaultCruzbitPort)
 	}
 
 	// load genesis block
@@ -277,14 +277,14 @@ func main() {
 					fmt.Printf("Error: %s\n", err)
 					break
 				}
-				amount := roundFloat(float64(balance), 8) / CRUZBITS_PER_CRUZ
+				amount := roundFloat(float64(balance), 8) / CruzbitsPerCruz
 				fmt.Printf("%4d: %s %16.8f\n",
 					i+1,
 					base64.StdEncoding.EncodeToString(pubKey[:]),
 					amount)
 				total += balance
 			}
-			amount := roundFloat(float64(total), 8) / CRUZBITS_PER_CRUZ
+			amount := roundFloat(float64(total), 8) / CruzbitsPerCruz
 			fmt.Printf("%s: %.8f\n", aurora.Bold("Total"), amount)
 
 		case "send":
@@ -403,7 +403,7 @@ func main() {
 				break
 			}
 			var total int64
-			lastHeight := tipHeader.Height - COINBASE_MATURITY
+			lastHeight := tipHeader.Height - CoinbaseMaturity
 		gpkt:
 			for i, pubKey := range pubKeys {
 				var rewards, startHeight int64 = 0, lastHeight + 1
@@ -429,14 +429,14 @@ func main() {
 						break
 					}
 				}
-				amount := roundFloat(float64(rewards), 8) / CRUZBITS_PER_CRUZ
+				amount := roundFloat(float64(rewards), 8) / CruzbitsPerCruz
 				fmt.Printf("%4d: %s %16.8f\n",
 					i+1,
 					base64.StdEncoding.EncodeToString(pubKey[:]),
 					amount)
 				total += rewards
 			}
-			amount := roundFloat(float64(total), 8) / CRUZBITS_PER_CRUZ
+			amount := roundFloat(float64(total), 8) / CruzbitsPerCruz
 			fmt.Printf("%s: %.8f\n", aurora.Bold("Total"), amount)
 
 		case "verify":
@@ -601,7 +601,7 @@ func sendTransaction(wallet *Wallet) (TransactionID, error) {
 	if amount < minAmount {
 		return TransactionID{}, fmt.Errorf(
 			"The peer's minimum amount to relay transactions is %.8f",
-			roundFloat(float64(minAmount), 8)/CRUZBITS_PER_CRUZ)
+			roundFloat(float64(minAmount), 8)/CruzbitsPerCruz)
 	}
 
 	// prompt for fee
@@ -612,7 +612,7 @@ func sendTransaction(wallet *Wallet) (TransactionID, error) {
 	if fee < minFee {
 		return TransactionID{}, fmt.Errorf(
 			"The peer's minimum required fee to relay transactions is %.8f",
-			roundFloat(float64(minFee), 8)/CRUZBITS_PER_CRUZ)
+			roundFloat(float64(minFee), 8)/CruzbitsPerCruz)
 	}
 
 	// prompt for memo
@@ -622,9 +622,9 @@ func sendTransaction(wallet *Wallet) (TransactionID, error) {
 		return TransactionID{}, err
 	}
 	memo := strings.TrimSpace(text)
-	if len(memo) > MAX_MEMO_LENGTH {
+	if len(memo) > MaxMemoLength {
 		return TransactionID{}, fmt.Errorf("Maximum memo length (%d) exceeded (%d)",
-			MAX_MEMO_LENGTH, len(memo))
+			MaxMemoLength, len(memo))
 	}
 
 	// create and send send it. by default the transaction expires if not mined within 3 blocks from now
@@ -666,7 +666,7 @@ func promptForValue(prompt string, rightJustify int, reader *bufio.Reader) (int6
 	if err != nil {
 		return 0, fmt.Errorf("Invalid value")
 	}
-	valueInt := int64(roundFloat(value, 8) * CRUZBITS_PER_CRUZ)
+	valueInt := int64(roundFloat(value, 8) * CruzbitsPerCruz)
 	return valueInt, nil
 }
 
@@ -747,9 +747,9 @@ func showTransaction(w *Wallet, tx *Transaction, height int64) {
 		fmt.Printf("%7v: %s\n", aurora.Bold("From"), base64.StdEncoding.EncodeToString(tx.From))
 	}
 	fmt.Printf("%7v: %s\n", aurora.Bold("To"), base64.StdEncoding.EncodeToString(tx.To))
-	fmt.Printf("%7v: %.8f\n", aurora.Bold("Amount"), roundFloat(float64(tx.Amount), 8)/CRUZBITS_PER_CRUZ)
+	fmt.Printf("%7v: %.8f\n", aurora.Bold("Amount"), roundFloat(float64(tx.Amount), 8)/CruzbitsPerCruz)
 	if tx.Fee > 0 {
-		fmt.Printf("%7v: %.8f\n", aurora.Bold("Fee"), roundFloat(float64(tx.Fee), 8)/CRUZBITS_PER_CRUZ)
+		fmt.Printf("%7v: %.8f\n", aurora.Bold("Fee"), roundFloat(float64(tx.Fee), 8)/CruzbitsPerCruz)
 	}
 	if len(tx.Memo) > 0 {
 		fmt.Printf("%7v: %s\n", aurora.Bold("Memo"), tx.Memo)

@@ -143,10 +143,10 @@ func (id *TransactionID) UnmarshalJSON(b []byte) error {
 func computeTransactionSeries(isCoinbase bool, height int64) int64 {
 	if isCoinbase {
 		// coinbases start using the new series right on time
-		return height/BLOCKS_UNTIL_NEW_SERIES + 1
+		return height/BlocksUntilNewSeries + 1
 	}
 
 	// otherwise don't start using a new series until 100 blocks in to mitigate
 	// potential reorg issues right around the switchover
-	return (height-100)/BLOCKS_UNTIL_NEW_SERIES + 1
+	return (height-100)/BlocksUntilNewSeries + 1
 }

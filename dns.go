@@ -61,7 +61,7 @@ func (d *DNSSeeder) handleQuery(m *dns.Msg, externalIP string) {
 					return
 				}
 				ip, port, _ := net.SplitHostPort(addr)
-				if port != strconv.Itoa(DEFAULT_CRUZBIT_PORT) {
+				if port != strconv.Itoa(DefaultCruzbitPort) {
 					continue
 				}
 				rr, err := dns.NewRR(fmt.Sprintf("%s A %s", q.Name, ip))
@@ -141,7 +141,7 @@ func dnsQueryForPeers() ([]string, error) {
 		for _, answer := range r.Answer {
 			a := answer.(*dns.A)
 			log.Printf("Seeder returned: %s\n", a.A.String())
-			peers = append(peers, a.A.String()+":"+strconv.Itoa(DEFAULT_CRUZBIT_PORT))
+			peers = append(peers, a.A.String()+":"+strconv.Itoa(DefaultCruzbitPort))
 		}
 	}
 	return peers, nil

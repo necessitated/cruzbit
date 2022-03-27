@@ -334,7 +334,7 @@ func (p *PeerManager) connectToPeers(ctx context.Context) error {
 		want = 1
 	} else {
 		// otherwise try to keep us maximally connected
-		want = MAX_OUTBOUND_PEER_CONNECTIONS
+		want = MaxOutboundPeerConnections
 	}
 
 	count := p.outboundPeerCount()
@@ -592,7 +592,7 @@ func (p *PeerManager) acceptConnections() {
 func (p *PeerManager) addToOutboundSet(addr string, peer *Peer) bool {
 	p.outPeersLock.Lock()
 	defer p.outPeersLock.Unlock()
-	if len(p.outPeers) == MAX_OUTBOUND_PEER_CONNECTIONS {
+	if len(p.outPeers) == MaxOutboundPeerConnections {
 		// too many connections
 		return false
 	}
@@ -666,7 +666,7 @@ func (p *PeerManager) checkHostConnectionLimit(addr string) bool {
 	if !ok {
 		return true
 	}
-	return count < MAX_INBOUND_PEER_CONNECTIONS_FROM_SAME_HOST
+	return count < MaxInboundPeerConnectionsFromSameHost
 }
 
 // Helper to check if a peer address exists in the outbound set
@@ -809,5 +809,5 @@ func IsInitialBlockDownload(ledger Ledger, blockStore BlockStorage) (bool, int64
 	if CheckpointsEnabled && tipHeader.Height < LatestCheckpointHeight {
 		return true, tipHeader.Height, nil
 	}
-	return tipHeader.Time < (time.Now().Unix() - MAX_TIP_AGE), tipHeader.Height, nil
+	return tipHeader.Time < (time.Now().Unix() - MaxTipAge), tipHeader.Height, nil
 }

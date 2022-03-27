@@ -25,7 +25,7 @@ func TestTransaction(t *testing.T) {
 	}
 
 	// create the unsigned transaction
-	tx := NewTransaction(pubKey, pubKey2, 50*CRUZBITS_PER_CRUZ, 0, 0, 0, 0, "for lunch")
+	tx := NewTransaction(pubKey, pubKey2, 50*CruzbitsPerCruz, 0, 0, 0, 0, "for lunch")
 
 	// sign the transaction
 	if err := tx.Sign(privKey); err != nil {
@@ -70,7 +70,7 @@ func TestTransactionTestVector1(t *testing.T) {
 	}
 	pubKey2 := ed25519.PublicKey(pubKeyBytes2)
 
-	tx := NewTransaction(pubKey, pubKey2, 50*CRUZBITS_PER_CRUZ, 2*CRUZBITS_PER_CRUZ, 0, 0, 0, "for lunch")
+	tx := NewTransaction(pubKey, pubKey2, 50*CruzbitsPerCruz, 2*CruzbitsPerCruz, 0, 0, 0, "for lunch")
 	tx.Time = 1558565474
 	tx.Nonce = 2019727887
 
