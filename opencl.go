@@ -1,4 +1,6 @@
+//go:build opencl
 // +build opencl
+
 // Copyright 2019 cruzbit developers
 // Use of this source code is governed by a MIT-style license that can be found in the LICENSE file.
 
@@ -19,7 +21,7 @@ import (
 	"unsafe"
 )
 
-const OPENCL_ENABLED = true
+const OpenclEnabled = true
 
 // OpenCLInit is called on startup.
 func OpenCLInit() int {

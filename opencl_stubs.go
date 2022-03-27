@@ -1,10 +1,12 @@
+//go:build !opencl
 // +build !opencl
+
 // Copyright 2019 cruzbit developers
 // Use of this source code is governed by a MIT-style license that can be found in the LICENSE file.
 
 package cruzbit
 
-const OPENCL_ENABLED = false
+const OpenclEnabled = false
 
 func OpenCLInit() int {
 	return 0
