@@ -7,7 +7,7 @@ A client is a fully validating and mining peer-to-peer node in the cruzbit netwo
 ## To install
 
 1. Make sure you have the new Go modules support enabled: `export GO111MODULE=on`
-2. `go install github.com/cruzbit/cruzbit/client`
+2. `go install github.com/jstnryan/cruzbit/client`
 
 The `client` application is now in `$HOME/go/bin/client`.
 
@@ -15,7 +15,7 @@ The `client` application is now in `$HOME/go/bin/client`.
 
 `client -pubkey <base64 encoded public key> -datadir <somewhere to store data>`
 
-- **pubkey** - This is a public key which receives your node's mining rewards. You can create one with the [wallet software](https://github.com/cruzbit/cruzbit/tree/master/wallet).
+- **pubkey** - This is a public key which receives your node's mining rewards. You can create one with the [wallet software](https://github.com/jstnryan/cruzbit/tree/master/wallet).
 - **datadir** - This points to a directory on disk to store block chain and ledger data. It will be created if it doesn't exist.
 
 ## What will the client do?

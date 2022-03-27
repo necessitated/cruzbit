@@ -2,8 +2,6 @@
 
 A simple decentralized peer-to-peer ledger implementation
 
-[![Build Status](https://travis-ci.org/cruzbit/cruzbit.svg?branch=master)](https://travis-ci.org/cruzbit/cruzbit)
-
 cruzbit is very similar to [bitcoin](https://www.bitcoin.com/bitcoin.pdf) with the following notable differences:
 
 * **Newer crypto** - The [Ed25519 signature system](https://ed25519.cr.yp.to/) is used for signing transactions. This system has a number of nice properties to protect users from security risks present with naive usage of ECDSA. The 256-bit version of the [SHA-3 hashing algorithm](https://en.wikipedia.org/wiki/SHA-3) is used for all hashing operations in the application, including the proof-of-work function but excluding hashing performed internally by the signature system. It's reported to be 
@@ -21,7 +19,7 @@ I noticed most people focusing on making more complex ledgers capable of executi
 
 ## License
 
-cruzbit is released under the terms of the MIT license. See [LICENSE](https://github.com/cruzbit/cruzbit/blob/master/LICENSE) for more information or see https://opensource.org/licenses/MIT.
+cruzbit is released under the terms of the MIT license. See [LICENSE](https://github.com/jstnryan/cruzbit/blob/master/LICENSE) for more information or see https://opensource.org/licenses/MIT.
 
 ## Warning
 
@@ -32,16 +30,16 @@ cruzbit is experimental alpha-quality software. There may be bugs.
 If you missed out on the opportunity to mine other cryptocurrencies you could give cruzbit a try!
 
 1. Install [Go](https://golang.org/doc/install)
-2. Install the [wallet](https://github.com/cruzbit/cruzbit/tree/master/wallet)
+2. Install the [wallet](https://github.com/jstnryan/cruzbit/tree/master/wallet)
 3. Run the wallet and issue a `newkey` command. Record the public key.
-4. Install the [client](https://github.com/cruzbit/cruzbit/tree/master/client)
+4. Install the [client](https://github.com/jstnryan/cruzbit/tree/master/client)
 5. Run the client using the public key from step 4. as the `-pubkey` argument.
 
 Complete steps for installation of Go and the cruzbit binaries on Linux can be found [here](https://gist.github.com/setanimals/f562ed7dd1c69af3fbe960c7b9502615).
 
-Steps to enable mining with [CUDA](https://developer.nvidia.com/cuda-zone) for Nvidia GPUs can be found [here](https://github.com/cruzbit/cruzbit/blob/master/cuda/BUILDING.md).
+Steps to enable mining with [CUDA](https://developer.nvidia.com/cuda-zone) for Nvidia GPUs can be found [here](https://github.com/jstnryan/cruzbit/blob/master/cuda/BUILDING.md).
 
-Steps to enable mining with [OpenCL](https://www.khronos.org/opencl/) (for all GPUs, including AMD) can be found [here](https://github.com/cruzbit/cruzbit/blob/master/opencl/README.md).
+Steps to enable mining with [OpenCL](https://www.khronos.org/opencl/) (for all GPUs, including AMD) can be found [here](https://github.com/jstnryan/cruzbit/blob/master/opencl/README.md).
 
 Like bitcoin, any blocks you mine will need to have an additional 100 blocks mined on top of them prior to the new cruzbits being applied to your balance. This is to mitigate a potentially poor user experience in the case of honest blockchain reorganizations.
 
@@ -49,9 +47,12 @@ Also note, instead of mining with a single public key, you can use the wallet to
 
 ## Not interested in mining but want to play with cruzbit?
 
-No problem! You can run the [client](https://github.com/cruzbit/cruzbit/tree/master/client) with `-numminers 0` so that it can function as your [wallet](https://github.com/cruzbit/cruzbit/tree/master/wallet) peer.
+No problem! You can run the [client](https://github.com/jstnryan/cruzbit/tree/master/client) with `-numminers 0` so that it can function as your [wallet](https://github.com/jstnryan/cruzbit/tree/master/wallet) peer.
 
 ## Discussion
 
 * **[Discord server](https://discord.gg/MRrEHYw)** for general chat as well as updates, including development status.
 * **[Reddit subreddit](https://www.reddit.com/r/cruzbit/)** for long-form discussion threads and Q&A.
+
+## History
+This project is a fork of the original repository at [github.com/cruzbit/cruzbit](https://github.com/cruzbit/cruzbit), which unfortunately went stale after the disappearance of the anonymous owner [asdvxgxasjab](https://github.com/asdvxgxasjab) past January 2020.

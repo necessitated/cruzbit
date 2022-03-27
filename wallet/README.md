@@ -8,7 +8,7 @@ It also stores and manages private keys on behalf of the user and can be used to
 ## To install
 
 1. Make sure you have the new Go modules support enabled: `export GO111MODULE=on`
-2. `go install github.com/cruzbit/cruzbit/wallet`
+2. `go install github.com/jstnryan/cruzbit/wallet`
 
 The `wallet` application is now in `$HOME/go/bin/wallet`.
 
@@ -34,7 +34,7 @@ You should only connect the wallet to a client peer you trust. A bad client can 
 
 The prompt should be mostly self-documenting. Press <kbd>Tab</kbd> to cycle through the menu options.
 
-You can use the `newkey` command to generate a public/private key pair. The displayed public key can be used as the `-pubkey` argument to the [client program.](https://github.com/cruzbit/cruzbit/tree/master/client)
+You can use the `newkey` command to generate a public/private key pair. The displayed public key can be used as the `-pubkey` argument to the [client program.](https://github.com/jstnryan/cruzbit/tree/master/client)
 
 ## Backup
 

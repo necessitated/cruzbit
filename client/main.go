@@ -18,7 +18,7 @@ import (
 	"strings"
 	"time"
 
-	. "github.com/cruzbit/cruzbit"
+	. "github.com/jstnryan/cruzbit"
 	"golang.org/x/crypto/ed25519"
 )
 

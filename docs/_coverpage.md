@@ -4,7 +4,7 @@
 
 > A simple decentralized peer-to-peer ledger implementation.
 
-[GitHub](https://github.com/cruzbit/cruzbit/)
+[GitHub](https://github.com/jstnryan/cruzbit/)
 [Travis](https://travis-ci.org/cruzbit/cruzbit)
 [Get Started](quickstart)
 

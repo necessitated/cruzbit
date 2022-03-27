@@ -28,8 +28,8 @@ To get started, let's build and install both the `client` and `wallet` component
 
 ```
 $ export GO111MODULE=on
-$ go get -v github.com/cruzbit/cruzbit/client github.com/cruzbit/cruzbit/wallet
-$ go install -v github.com/cruzbit/cruzbit/client github.com/cruzbit/cruzbit/wallet
+$ go get -v github.com/jstnryan/cruzbit/client github.com/jstnryan/cruzbit/wallet
+$ go install -v github.com/jstnryan/cruzbit/client github.com/jstnryan/cruzbit/wallet
 ```
 
 The cruzbit bins should now be available in your Go-managed `$GOPATH/bin` (which is hopefully also on your `$PATH`). You can test this by running e.g. `client -h` or `$GOPATH/bin/client -h` to print the CLI help screen.

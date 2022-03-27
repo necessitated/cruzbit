@@ -7,7 +7,7 @@ The inspector is a simple tool for examining the offline block chain data
 ## To install
 
 1. Make sure you have the new Go modules support enabled: `export GO111MODULE=on`
-2. `go install github.com/cruzbit/cruzbit/inspector`
+2. `go install github.com/jstnryan/cruzbit/inspector`
 
 The `inspector` application is now in `$HOME/go/bin/inspector`.
 
