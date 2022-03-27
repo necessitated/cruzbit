@@ -17,10 +17,10 @@ func TestEncodeBlockHeader(t *testing.T) {
 	}
 
 	// create a coinbase
-	tx := NewTransaction(nil, pubKey, INITIAL_COINBASE_REWARD, 0, 0, 0, 0, "hello")
+	tx := NewTransaction(nil, pubKey, InitialCoinbaseReward, 0, 0, 0, 0, "hello")
 
 	// create a block
-	targetBytes, err := hex.DecodeString(INITIAL_TARGET)
+	targetBytes, err := hex.DecodeString(InitialTarget)
 	if err != nil {
 		t.Fatal(err)
 	}

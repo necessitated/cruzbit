@@ -7,73 +7,74 @@ package cruzbit
 // we could have played with these but we're introducing significant enough changes
 // already IMO, so let's keep the scope of this experiment as small as we can
 
-const CRUZBITS_PER_CRUZ = 100000000
+const CruzbitsPerCruz = 100000000
 
-const INITIAL_COINBASE_REWARD = 50 * CRUZBITS_PER_CRUZ
+const InitialCoinbaseReward = 50 * CruzbitsPerCruz
 
-const COINBASE_MATURITY = 100 // blocks
+const CoinbaseMaturity = 100 // blocks
 
-const INITIAL_TARGET = "00000000ffff0000000000000000000000000000000000000000000000000000"
+const InitialTarget = "00000000ffff0000000000000000000000000000000000000000000000000000"
 
-const MAX_FUTURE_SECONDS = 2 * 60 * 60 // 2 hours
+const MaxFutureSeconds = 2 * 60 * 60 // 2 hours
 
-const MAX_MONEY = 21000000 * CRUZBITS_PER_CRUZ
+const MaxMoney = 21000000 * CruzbitsPerCruz
 
-const RETARGET_INTERVAL = 2016 // 2 weeks in blocks
+const RetargetInterval = 2016 // 2 weeks in blocks
 
-const RETARGET_TIME = 1209600 // 2 weeks in seconds
+const RetargetTime = 1209600 // 2 weeks in seconds
 
-const TARGET_SPACING = 600 // every 10 minutes
+const TargetSpacing = 600 // every 10 minutes
 
-const NUM_BLOCKS_FOR_MEDIAN_TMESTAMP = 11
+const NumBlocksForMedianTmestamp = 11
 
-const BLOCKS_UNTIL_REWARD_HALVING = 210000 // 4 years in blocks
+const BlocksUntilRewardHalving = 210000 // 4 years in blocks
 
 // the below value affects ledger consensus and comes from bitcoin cash
 
-const RETARGET_SMA_WINDOW = 144 // 1 day in blocks
+const RetargetSmaWindow = 144 // 1 day in blocks
 
 // the below values affect ledger consensus and are new as of our ledger
 
-const INITIAL_MAX_TRANSACTIONS_PER_BLOCK = 10000 // 16.666... tx/sec, ~4 MBish in JSON
+const InitialMaxTransactionsPerBlock = 10000 // 16.666... tx/sec, ~4 MBish in JSON
 
-const BLOCKS_UNTIL_TRANSACTIONS_PER_BLOCK_DOUBLING = 105000 // 2 years in blocks
+const BlocksUntilTransactionsPerBlockDoubling = 105000 // 2 years in blocks
 
-const MAX_TRANSACTIONS_PER_BLOCK = 1<<31 - 1
+const MaxTransactionsPerBlock = 1<<31 - 1
 
-const MAX_TRANSACTIONS_PER_BLOCK_EXCEEDED_AT_HEIGHT = 1852032 // pre-calculated
+const MaxTransactionsPerBlockExceededAtHeight = 1852032 // pre-calculated
 
-const BLOCKS_UNTIL_NEW_SERIES = 1008 // 1 week in blocks
+const BlocksUntilNewSeries = 1008 // 1 week in blocks
 
-const MAX_MEMO_LENGTH = 100 // bytes (ascii/utf8 only)
+const MaxMemoLength = 100 // bytes (ascii/utf8 only)
 
 // given our JSON protocol we should respect Javascript's Number.MAX_SAFE_INTEGER value
-const MAX_NUMBER int64 = 1<<53 - 1
+const MaxNumber int64 = 1<<53 - 1
 
 // height at which we switch from bitcoin's difficulty adjustment algorithm to bitcoin cash's algorithm
-const BITCOIN_CASH_RETARGET_ALGORITHM_HEIGHT = 28861
+const BitcoinCashRetargetAlgorithmHeight = 28861
 
 // the below values only affect peering behavior and do not affect ledger consensus
 
-const DEFAULT_CRUZBIT_PORT = 8831
+const DefaultCruzbitPort = 8831
 
-const MAX_OUTBOUND_PEER_CONNECTIONS = 8
+const MaxOutboundPeerConnections = 8
 
-const MAX_INBOUND_PEER_CONNECTIONS = 128
+const MaxInboundPeerConnections = 128
 
-const MAX_INBOUND_PEER_CONNECTIONS_FROM_SAME_HOST = 4
+const MaxInboundPeerConnectionsFromSameHost = 4
 
-const MAX_TIP_AGE = 24 * 60 * 60
+// MaxTipAge is originally 24 hours, but has been increased to 30 days to prevent deadlock caused by low mining volume
+const MaxTipAge = 24 * 60 * 60 * 30
 
-const MAX_PROTOCOL_MESSAGE_LENGTH = 2 * 1024 * 1024 // doesn't apply to blocks
+const MaxProtocolMessageLength = 2 * 1024 * 1024 // doesn't apply to blocks
 
 // the below values are mining policy and also do not affect ledger consensus
 
 // if you change this it needs to be less than the maximum at the current height
-const MAX_TRANSACTIONS_TO_INCLUDE_PER_BLOCK = INITIAL_MAX_TRANSACTIONS_PER_BLOCK
+const MaxTransactionsToIncludePerBlock = InitialMaxTransactionsPerBlock
 
-const MAX_TRANSACTION_QUEUE_LENGTH = MAX_TRANSACTIONS_TO_INCLUDE_PER_BLOCK * 10
+const MaxTransactionQueueLength = MaxTransactionsToIncludePerBlock * 10
 
-const MIN_FEE_CRUZBITS = 1000000 // 0.01 cruz
+const MinFeeCruzbits = 1000000 // 0.01 cruz
 
-const MIN_AMOUNT_CRUZBITS = 1000000 // 0.01 cruz
+const MinAmountCruzbits = 1000000 // 0.01 cruz

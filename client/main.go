@@ -30,7 +30,7 @@ func main() {
 	pubKeyPtr := flag.String("pubkey", "", "A public key which receives newly mined block rewards")
 	dataDirPtr := flag.String("datadir", "", "Path to a directory to save block chain data")
 	memoPtr := flag.String("memo", "", "A memo to include in newly mined blocks")
-	portPtr := flag.Int("port", DEFAULT_CRUZBIT_PORT, "Port to listen for incoming peer connections")
+	portPtr := flag.Int("port", DefaultCruzbitPort, "Port to listen for incoming peer connections")
 	peerPtr := flag.String("peer", "", "Address of a peer to connect to")
 	upnpPtr := flag.Bool("upnp", false, "Attempt to forward the cruzbit port on your router with UPnP")
 	dnsSeedPtr := flag.Bool("dnsseed", false, "Run a DNS server to allow others to find peers")
@@ -42,7 +42,7 @@ func main() {
 	keyFilePtr := flag.String("keyfile", "", "Path to a file containing public keys to use when mining")
 	tlsCertPtr := flag.String("tlscert", "", "Path to a file containing a PEM-encoded X.509 certificate to use with TLS")
 	tlsKeyPtr := flag.String("tlskey", "", "Path to a file containing a PEM-encoded private key to use with TLS")
-	inLimitPtr := flag.Int("inlimit", MAX_INBOUND_PEER_CONNECTIONS, "Limit for the number of inbound peer connections.")
+	inLimitPtr := flag.Int("inlimit", MaxInboundPeerConnections, "Limit for the number of inbound peer connections.")
 	banListPtr := flag.String("banlist", "", "Path to a file containing a list of banned host addresses")
 	flag.Parse()
 
@@ -59,7 +59,7 @@ func main() {
 	if len(*peerPtr) != 0 {
 		// add default port, if one was not supplied
 		if i := strings.LastIndex(*peerPtr, ":"); i < 0 {
-			*peerPtr = *peerPtr + ":" + strconv.Itoa(DEFAULT_CRUZBIT_PORT)
+			*peerPtr = *peerPtr + ":" + strconv.Itoa(DefaultCruzbitPort)
 		}
 	}
 

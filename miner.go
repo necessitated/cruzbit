@@ -154,8 +154,8 @@ func (m *Miner) run() {
 				continue
 			}
 
-			if MAX_TRANSACTIONS_TO_INCLUDE_PER_BLOCK != 0 &&
-				len(block.Transactions) >= MAX_TRANSACTIONS_TO_INCLUDE_PER_BLOCK {
+			if MaxTransactionsToIncludePerBlock != 0 &&
+				len(block.Transactions) >= MaxTransactionsToIncludePerBlock {
 				log.Printf("Per-block transaction limit hit (%d)\n", len(block.Transactions))
 				continue
 			}
@@ -229,7 +229,7 @@ func (m *Miner) run() {
 			} else {
 				// no solution yet
 				block.Header.Nonce += attempts
-				if block.Header.Nonce > MAX_NUMBER {
+				if block.Header.Nonce > MaxNumber {
 					block.Header.Nonce = 0
 				}
 			}
@@ -256,7 +256,7 @@ func createNextBlock(tipID BlockID, tipHeader *BlockHeader, txQueue TransactionQ
 	blockStore BlockStorage, ledger Ledger, pubKey ed25519.PublicKey, memo string) (*Block, error) {
 
 	// fetch transactions to confirm from the queue
-	txs := txQueue.Get(MAX_TRANSACTIONS_TO_INCLUDE_PER_BLOCK - 1)
+	txs := txQueue.Get(MaxTransactionsToIncludePerBlock - 1)
 
 	// calculate total fees
 	var fees int64 = 0

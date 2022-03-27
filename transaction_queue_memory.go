@@ -22,7 +22,7 @@ type TransactionQueueMemory struct {
 // NewTransactionQueueMemory returns a new NewTransactionQueueMemory instance.
 func NewTransactionQueueMemory(ledger Ledger) *TransactionQueueMemory {
 	// don't accept transactions that would leave an unspendable balance with this node
-	var minBalance int64 = MIN_AMOUNT_CRUZBITS + MIN_FEE_CRUZBITS
+	var minBalance int64 = MinAmountCruzbits + MinFeeCruzbits
 
 	return &TransactionQueueMemory{
 		txMap:        make(map[TransactionID]*list.Element),
@@ -121,7 +121,7 @@ func (t *TransactionQueueMemory) reprocessQueue(height int64) error {
 			// check maturity and expiration if included in the next block
 			!tx.IsMature(height+1) || tx.IsExpired(height+1) ||
 			// don't re-mine any now unconfirmed spam
-			tx.Fee < MIN_FEE_CRUZBITS || tx.Amount < MIN_AMOUNT_CRUZBITS {
+			tx.Fee < MinFeeCruzbits || tx.Amount < MinAmountCruzbits {
 			// transaction has been invalidated. remove and continue
 			id, err := tx.ID()
 			if err != nil {

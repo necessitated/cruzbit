@@ -44,7 +44,7 @@ func NewBlock(previous BlockID, height int64, target, chainWork BlockID, transac
 	*Block, error) {
 
 	// enforce the hard cap transaction limit
-	if len(transactions) > MAX_TRANSACTIONS_PER_BLOCK {
+	if len(transactions) > MaxTransactionsPerBlock {
 		return nil, fmt.Errorf("Transaction list size exceeds limit per block")
 	}
 
@@ -63,7 +63,7 @@ func NewBlock(previous BlockID, height int64, target, chainWork BlockID, transac
 			Time:             time.Now().Unix(), // just use the system time
 			Target:           target,
 			ChainWork:        computeChainWork(target, chainWork),
-			Nonce:            rand.Int63n(MAX_NUMBER),
+			Nonce:            rand.Int63n(MaxNumber),
 			Height:           height,
 			TransactionCount: int32(len(transactions)),
 		},

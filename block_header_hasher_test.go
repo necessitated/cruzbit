@@ -28,11 +28,11 @@ func makeTestBlock(n int) (*Block, error) {
 		privKey2 := ed25519.NewKeyFromSeed([]byte(seed2))
 		pubKey2 := privKey2.Public().(ed25519.PublicKey)
 
-		matures := MAX_NUMBER
-		expires := MAX_NUMBER
-		height := MAX_NUMBER
-		amount := int64(MAX_MONEY)
-		fee := int64(MAX_MONEY)
+		matures := MaxNumber
+		expires := MaxNumber
+		height := MaxNumber
+		amount := int64(MaxMoney)
+		fee := int64(MaxMoney)
 
 		tx := NewTransaction(pubKey, pubKey2, amount, fee, matures, height, expires, "こんにちは")
 		if len(tx.Memo) != 15 {
@@ -49,7 +49,7 @@ func makeTestBlock(n int) (*Block, error) {
 	}
 
 	// create the block
-	targetBytes, err := hex.DecodeString(INITIAL_TARGET)
+	targetBytes, err := hex.DecodeString(InitialTarget)
 	if err != nil {
 		return nil, err
 	}
