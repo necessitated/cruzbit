@@ -150,7 +150,7 @@ func (h *BlockHeaderHasher) initBuffer(header *BlockHeader) {
 
 // Update is called everytime the header is updated and the caller wants its new hash value/ID.
 func (h *BlockHeaderHasher) Update(minerNum int, header *BlockHeader) (*big.Int, int64) {
-	var deviceMining bool = CUDA_ENABLED || OPENCL_ENABLED
+	var deviceMining bool = CudaEnabled || OpenclEnabled
 	var bufferChanged bool
 
 	if !h.initialized {
@@ -290,7 +290,7 @@ func (h *BlockHeaderHasher) updateDevice(minerNum int, header *BlockHeader, buff
 	if bufferChanged {
 		// update the device's copy of the buffer
 		lastOffset := h.nonceOffset + h.nonceLen
-		if CUDA_ENABLED {
+		if CudaEnabled {
 			h.hashesPerAttempt = CudaMinerUpdate(minerNum, h.buffer, h.bufLen,
 				h.nonceOffset, lastOffset, header.Target)
 		} else {
@@ -300,7 +300,7 @@ func (h *BlockHeaderHasher) updateDevice(minerNum int, header *BlockHeader, buff
 	}
 	// try for a solution
 	var nonce int64
-	if CUDA_ENABLED {
+	if CudaEnabled {
 		nonce = CudaMinerMine(minerNum, header.Nonce)
 	} else {
 		nonce = OpenCLMinerMine(minerNum, header.Nonce)

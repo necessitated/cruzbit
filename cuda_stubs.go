@@ -1,10 +1,12 @@
+//go:build !cuda
 // +build !cuda
+
 // Copyright 2019 cruzbit developers
 // Use of this source code is governed by a MIT-style license that can be found in the LICENSE file.
 
 package cruzbit
 
-const CUDA_ENABLED = false
+const CudaEnabled = false
 
 func CudaInit() int {
 	return 0

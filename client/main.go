@@ -91,14 +91,14 @@ func main() {
 
 	// initialize CUDA or OpenCL devices if enabled
 	if *numMinersPtr > 0 {
-		if CUDA_ENABLED {
+		if CudaEnabled {
 			deviceCount := CudaInit()
 			if deviceCount != *numMinersPtr {
 				log.Fatalf("CUDA enabled but -numminers is %d and supported devices is %d\n",
 					*numMinersPtr, deviceCount)
 			}
 			log.Println("CUDA initialized")
-		} else if OPENCL_ENABLED {
+		} else if OpenclEnabled {
 			deviceCount := OpenCLInit()
 			if deviceCount != *numMinersPtr {
 				log.Fatalf("OpenCL enabled but -numminers is %d and supported devices is %d\n",

@@ -1,4 +1,6 @@
+//go:build cuda
 // +build cuda
+
 // Copyright 2019 cruzbit developers
 // Use of this source code is governed by a MIT-style license that can be found in the LICENSE file.
 
@@ -19,7 +21,7 @@ import (
 	"unsafe"
 )
 
-const CUDA_ENABLED = true
+const CudaEnabled = true
 
 // CudaInit is called on startup.
 func CudaInit() int {
