@@ -21,4 +21,5 @@ require (
 	gitlab.com/NebulousLabs/fastrand v0.0.0-20181126182046-603482d69e40 // indirect
 	gitlab.com/NebulousLabs/go-upnp v0.0.0-20181011194642-3a71999ed0d3
 	golang.org/x/crypto v0.0.0-20190621222207-cc06ce4a13d4
+	golang.org/x/sys v0.0.0-20220325203850-36772127a21f // indirect
 )
