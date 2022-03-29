@@ -410,7 +410,7 @@ func (p *PeerManager) connect(ctx context.Context, addr string) (int, *Peer, err
 	var myAddress string
 	if p.accepting && p.open {
 		// advertise ourself as open
-		myAddress = p.myIP + ":" + strconv.Itoa(p.port)
+		myAddress = net.JoinHostPort(p.myIP, strconv.Itoa(p.port))
 	}
 
 	// connect to the peer
