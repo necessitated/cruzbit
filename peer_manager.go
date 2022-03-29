@@ -182,6 +182,10 @@ func (p *PeerManager) run() {
 		}
 	}
 
+	// create TLS certificate repository; make config association
+	certificateManager := NewCertificateManager(p.dataDir, p.certPath, p.keyPath)
+	p.server.TLSConfig.GetCertificate = certificateManager.GetCertificateFunc()
+
 	// handle listening for inbound peers
 	p.listenForPeers(ctx)
 
@@ -191,6 +195,10 @@ func (p *PeerManager) run() {
 	// try connecting out to peers every 5 minutes
 	ticker := time.NewTicker(5 * time.Minute)
 	defer ticker.Stop()
+
+	// set up a TLS certificate expiry monitor
+	certTicker := time.NewTimer(3 * time.Minute)
+	defer certTicker.Stop()
 
 	// main loop
 	for {
@@ -239,6 +247,14 @@ func (p *PeerManager) run() {
 
 			// periodically try connecting to some saved peers
 			p.connectToPeers(ctx)
+
+		case <-certTicker.C:
+			// periodically check that the TLS Certificates are still valid
+			nextDuration, err := certificateManager.CheckCertificates()
+			if err != nil {
+				log.Println(err)
+			}
+			certTicker.Reset(nextDuration)
 
 		case _, ok := <-p.shutdownChan:
 			if !ok {
@@ -567,23 +583,11 @@ func (p *PeerManager) acceptConnections() {
 		peer.Run()
 	}
 
-	var certPath, keyPath string = p.certPath, p.keyPath
-	if len(certPath) == 0 {
-		// generate new certificate and key for tls on each run
-		log.Println("Generating TLS certificate and key")
-		var err error
-		certPath, keyPath, err = generateSelfSignedCertAndKey(p.dataDir)
-		if err != nil {
-			log.Println(err)
-			return
-		}
-	}
-
 	// listen for websocket requests using the genesis block ID as the handler pattern
 	http.HandleFunc("/"+p.genesisID.String(), peerHandler)
 
 	log.Println("Listening for new peer connections")
-	if err := p.server.ListenAndServeTLS(certPath, keyPath); err != nil {
+	if err := p.server.ListenAndServeTLS("", ""); err != nil {
 		log.Println(err)
 	}
 }
