@@ -232,7 +232,7 @@ func (p *PeerManager) run() {
 			// handle listening for inbound peers
 			p.listenForPeers(ctx)
 
-			if p.dnsseed && rand.Intn(2) == 1 {
+			if p.dnsseed && p.outboundPeerCount() >= MaxOutboundPeerConnections && rand.Intn(2) == 1 {
 				// drop a peer so we can try another
 				p.dropRandomPeer()
 			}
