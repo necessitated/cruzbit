@@ -18,6 +18,8 @@ import (
 )
 
 const (
+	certExpiryThreshold = time.Hour * 24 // time from the end of validity period to consider the certificate invalid
+
 	certLifetime = time.Hour * 24 * 365 // 1 year, but we create a new one every time we startup
 
 	certName = "cert.pem"
@@ -27,11 +29,10 @@ const (
 
 // Client config
 var tlsClientConfig *tls.Config = &tls.Config{
-	RootCAs:                  nil,
-	InsecureSkipVerify:       true,
-	MinVersion:               tls.VersionTLS12,
-	CurvePreferences:         []tls.CurveID{tls.CurveP256, tls.CurveP384, tls.CurveP521},
-	PreferServerCipherSuites: false,
+	RootCAs:            nil,
+	InsecureSkipVerify: true,
+	MinVersion:         tls.VersionTLS12,
+	CurvePreferences:   []tls.CurveID{tls.CurveP256, tls.CurveP384, tls.CurveP521},
 	CipherSuites: []uint16{
 		tls.TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,
 		tls.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
@@ -44,9 +45,8 @@ var tlsClientConfig *tls.Config = &tls.Config{
 
 // Server config
 var tlsServerConfig *tls.Config = &tls.Config{
-	MinVersion:               tls.VersionTLS12,
-	CurvePreferences:         []tls.CurveID{tls.CurveP256, tls.CurveP384, tls.CurveP521},
-	PreferServerCipherSuites: true,
+	MinVersion:       tls.VersionTLS12,
+	CurvePreferences: []tls.CurveID{tls.CurveP256, tls.CurveP384, tls.CurveP521},
 	CipherSuites: []uint16{
 		tls.TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305,
 		tls.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
@@ -115,4 +115,12 @@ func generateSelfSignedCertAndKey(tlsDataDir string) (certPath, keyPath string, 
 	}
 
 	return certPath, keyPath, nil
+}
+
+func getTLSCertificateExpiry(tlsCert tls.Certificate) (time.Time, error) {
+	certParsed, err := x509.ParseCertificate(tlsCert.Certificate[0])
+	if err != nil {
+		return time.Now(), err
+	}
+	return certParsed.NotAfter, nil
 }
