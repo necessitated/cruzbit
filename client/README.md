@@ -6,10 +6,10 @@ A client is a fully validating and mining peer-to-peer node in the cruzbit netwo
 
 ## To install
 
-1. Make sure you have the new Go modules support enabled: `export GO111MODULE=on`
-2. `go install github.com/jstnryan/cruzbit/client`
+* Go versions < 1.16: `GO111MODULE=on go install github.com/jstnryan/cruzbit/client`
+* Go versions >= 1.16: `go install github.com/jstnryan/cruzbit/client@latest`
 
-The `client` application is now in `$HOME/go/bin/client`.
+The `client` application is now at `$HOME/go/bin/client`.
 
 ## Basic command line arguments
 
