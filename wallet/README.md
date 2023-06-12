@@ -7,10 +7,10 @@ It also stores and manages private keys on behalf of the user and can be used to
 
 ## To install
 
-1. Make sure you have the new Go modules support enabled: `export GO111MODULE=on`
-2. `go install github.com/jstnryan/cruzbit/wallet`
+* Go versions < 1.16: `GO111MODULE=on go install github.com/jstnryan/cruzbit/wallet`
+* Go versions >= 1.16: `go install github.com/jstnryan/cruzbit/wallet@latest`
 
-The `wallet` application is now in `$HOME/go/bin/wallet`.
+The `wallet` application is now at `$HOME/go/bin/wallet`.
 
 ### Note to Microsoft Windows users
 
