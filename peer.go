@@ -16,7 +16,7 @@ import (
 	"unicode/utf8"
 
 	"github.com/gorilla/websocket"
-	"github.com/seiflotfy/cuckoofilter"
+	cuckoo "github.com/seiflotfy/cuckoofilter"
 	"golang.org/x/crypto/ed25519"
 )
 
@@ -29,6 +29,7 @@ type Peer struct {
 	blockStore                    BlockStorage
 	ledger                        Ledger
 	processor                     *Processor
+	indexer                       *Indexer
 	txQueue                       TransactionQueue
 	outbound                      bool
 	localDownloadQueue            *BlockQueue // peer-local download queue
@@ -59,7 +60,7 @@ var PeerUpgrader = websocket.Upgrader{
 
 // NewPeer returns a new instance of a peer.
 func NewPeer(conn *websocket.Conn, genesisID BlockID, peerStore PeerStorage,
-	blockStore BlockStorage, ledger Ledger, processor *Processor,
+	blockStore BlockStorage, ledger Ledger, processor *Processor, indexer *Indexer,
 	txQueue TransactionQueue, blockQueue *BlockQueue, addrChan chan<- string) *Peer {
 	peer := &Peer{
 		conn:                conn,
@@ -68,6 +69,7 @@ func NewPeer(conn *websocket.Conn, genesisID BlockID, peerStore PeerStorage,
 		blockStore:          blockStore,
 		ledger:              ledger,
 		processor:           processor,
+		indexer:             indexer,
 		txQueue:             txQueue,
 		localDownloadQueue:  NewBlockQueue(),
 		localInflightQueue:  NewBlockQueue(),
@@ -594,6 +596,17 @@ func (p *Peer) run() {
 					return
 				}
 				if err := p.onGetBlockHeaderByHeight(gbhbh.Height, outChan); err != nil {
+					log.Printf("Error: %s, from: %s\n", err, p.conn.RemoteAddr())
+					break
+				}
+
+			case "get_graph":
+				var gn GetGraphMessage
+				if err := json.Unmarshal(body, &gn); err != nil {
+					log.Printf("Error: %s, from: %s\n", err, p.conn.RemoteAddr())
+					return
+				}
+				if err := p.onGetGraph(gn.PublicKey, gn.DirectoryID, outChan); err != nil {
 					log.Printf("Error: %s, from: %s\n", err, p.conn.RemoteAddr())
 					break
 				}
@@ -1148,6 +1161,32 @@ func (p *Peer) getBlockHeader(id BlockID, outChan chan<- Message) error {
 		return fmt.Errorf("Block header for %s not found", id)
 	}
 	outChan <- Message{Type: "block_header", Body: BlockHeaderMessage{BlockID: &id, BlockHeader: header}}
+	return nil
+}
+
+// Handle a request for a public key's view graph
+func (p *Peer) onGetGraph(pubKey ed25519.PublicKey, directoryID string, outChan chan<- Message) error {
+	log.Printf("Received get_graph from: %s\n", p.conn.RemoteAddr())
+
+	pk := pubKeyToString(pubKey)
+	viewGraph, ok := p.indexer.dirGraphs[directoryID]
+
+	graph := ""
+
+	if ok {
+		graph = viewGraph.ToDOT(pk, p.indexer.keyState)
+	}
+
+	outChan <- Message{
+		Type: "graph",
+		Body: GraphMessage{
+			BlockID:   p.indexer.latestBlockID,
+			Height:    p.indexer.latestHeight,
+			PublicKey: pubKey,
+			Graph:     graph,
+		},
+	}
+
 	return nil
 }
 

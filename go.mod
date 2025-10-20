@@ -1,4 +1,4 @@
-module github.com/jstnryan/cruzbit
+module github.com/necessitated/cruzbit-tree
 
 go 1.12
 

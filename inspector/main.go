@@ -14,8 +14,8 @@ import (
 	"path/filepath"
 	"strings"
 
-	. "github.com/jstnryan/cruzbit"
 	"github.com/logrusorgru/aurora"
+	. "github.com/necessitated/cruzbit-tree"
 	"golang.org/x/crypto/ed25519"
 )
 

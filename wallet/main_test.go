@@ -1,9 +1,10 @@
 package main
 
 import (
-	. "github.com/jstnryan/cruzbit"
 	"strconv"
 	"testing"
+
+	. "github.com/necessitated/cruzbit-tree"
 )
 
 func TestRoundFloat(t *testing.T) {

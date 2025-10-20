@@ -18,7 +18,7 @@ import (
 	"strings"
 	"time"
 
-	. "github.com/jstnryan/cruzbit"
+	. "github.com/necessitated/cruzbit-tree"
 	"golang.org/x/crypto/ed25519"
 )
 
@@ -204,8 +204,11 @@ func main() {
 		}
 	}
 
+	indexer := NewIndexer(blockStore, ledger, processor, genesisID)
+	indexer.Run()
+
 	// manage peer connections
-	peerManager := NewPeerManager(genesisID, peerStore, blockStore, ledger, processor, txQueue,
+	peerManager := NewPeerManager(genesisID, peerStore, blockStore, ledger, processor, indexer, txQueue,
 		*dataDirPtr, myExternalIP, *peerPtr, *tlsCertPtr, *tlsKeyPtr,
 		*portPtr, *inLimitPtr, !*noAcceptPtr, !*noIrcPtr, *dnsSeedPtr, banMap)
 	peerManager.Run()

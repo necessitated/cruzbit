@@ -14,7 +14,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/glendc/go-external-ip"
+	externalip "github.com/glendc/go-external-ip"
 )
 
 // PeerManager manages incoming and outgoing peer connections on behalf of the client.
@@ -25,6 +25,7 @@ type PeerManager struct {
 	blockStore        BlockStorage
 	ledger            Ledger
 	processor         *Processor
+	indexer           *Indexer
 	txQueue           TransactionQueue
 	blockQueue        *BlockQueue
 	dataDir           string
@@ -57,7 +58,7 @@ type PeerManager struct {
 // NewPeerManager returns a new PeerManager instance.
 func NewPeerManager(
 	genesisID BlockID, peerStore PeerStorage, blockStore BlockStorage,
-	ledger Ledger, processor *Processor, txQueue TransactionQueue,
+	ledger Ledger, processor *Processor, indexer *Indexer, txQueue TransactionQueue,
 	dataDir, myExternalIP, peer, certPath, keyPath string,
 	port, inboundLimit int, accept, irc, dnsseed bool, banMap map[string]bool) *PeerManager {
 
@@ -90,6 +91,7 @@ func NewPeerManager(
 		blockStore:        blockStore,
 		ledger:            ledger,
 		processor:         processor,
+		indexer:           indexer,
 		txQueue:           txQueue,
 		blockQueue:        NewBlockQueue(),
 		dataDir:           dataDir,
@@ -417,7 +419,7 @@ func (p *PeerManager) connectToPeers(ctx context.Context) error {
 
 // Connect to a peer
 func (p *PeerManager) connect(ctx context.Context, addr string) (int, *Peer, error) {
-	peer := NewPeer(nil, p.genesisID, p.peerStore, p.blockStore, p.ledger, p.processor, p.txQueue, p.blockQueue, p.addrChan)
+	peer := NewPeer(nil, p.genesisID, p.peerStore, p.blockStore, p.ledger, p.processor, p.indexer, p.txQueue, p.blockQueue, p.addrChan)
 
 	if ok := p.addToOutboundSet(addr, peer); !ok {
 		return 0, nil, fmt.Errorf("Too many peer connections")
@@ -567,7 +569,7 @@ func (p *PeerManager) acceptConnections() {
 			return
 		}
 
-		peer := NewPeer(conn, p.genesisID, p.peerStore, p.blockStore, p.ledger, p.processor, p.txQueue, p.blockQueue, p.addrChan)
+		peer := NewPeer(conn, p.genesisID, p.peerStore, p.blockStore, p.ledger, p.processor, p.indexer, p.txQueue, p.blockQueue, p.addrChan)
 
 		if ok := p.addToInboundSet(r.RemoteAddr, peer); !ok {
 			// TODO: tell the peer why

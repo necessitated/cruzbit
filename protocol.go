@@ -64,6 +64,22 @@ type FindCommonAncestorMessage struct {
 	BlockIDs []BlockID `json:"block_ids"`
 }
 
+// GetGraph requests a public key's directory graph
+// Type: "get_graph".
+type GetGraphMessage struct {
+	PublicKey   ed25519.PublicKey `json:"public_key"`
+	DirectoryID string            `json:"directory_id"`
+}
+
+// GraphMessage is used to send a public key's graph to a peer.
+// Type: "graph".
+type GraphMessage struct {
+	BlockID   BlockID           `json:"block_id,omitempty"`
+	Height    int64             `json:"height,omitempty"`
+	PublicKey ed25519.PublicKey `json:"public_key"`
+	Graph     string            `json:"graph"`
+}
+
 // GetBalanceMessage requests a public key's balance.
 // Type: "get_balance".
 type GetBalanceMessage struct {

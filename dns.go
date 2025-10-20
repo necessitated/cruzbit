@@ -120,6 +120,7 @@ var Seeders = [...]string{
 	"one.cruzb.it:8831",  // jstnryan, https://cruzb.it
 	"two.cruzb.it:8831",
 	"116.203.76.30:8831", // Sy, https://cruz.bergbau.pw
+	"20.16.255.39:8831", //veripax
 }
 
 // Query DNS seeders

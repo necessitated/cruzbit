@@ -21,8 +21,8 @@ import (
 	"time"
 
 	"github.com/c-bata/go-prompt"
-	. "github.com/jstnryan/cruzbit"
 	"github.com/logrusorgru/aurora"
+	. "github.com/necessitated/cruzbit-tree"
 	"golang.org/x/crypto/ed25519"
 	"golang.org/x/crypto/ssh/terminal"
 )
